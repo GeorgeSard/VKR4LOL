@@ -84,13 +84,13 @@ stages:
           test_size: 0.2
           random_state: 42
         train_delay:
-          n_estimators: 400
-          learning_rate: 0.05
+          n_estimators: 600
+          learning_rate: 0.04
           num_leaves: 63
-          max_depth: -1
-          min_child_samples: 50
-          reg_alpha: 0.0
-          reg_lambda: 0.0
+          max_depth: 8
+          min_child_samples: 80
+          reg_alpha: 0.1
+          reg_lambda: 0.2
           class_weight: balanced
           random_state: 42
           threshold_min: 0.1
@@ -99,23 +99,23 @@ stages:
     outs:
     - path: models/delay_model/metadata.json
       hash: md5
-      md5: 5a88f686163714df8a1bd1fc5920e6e3
-      size: 1544
+      md5: 36daa270195a9a39bf844702a1fa93ff
+      size: 1543
     - path: models/delay_model/model.pkl
       hash: md5
-      md5: b31623f57458239b4382389290be86db
-      size: 2747900
+      md5: d8b9a12e82c81a5ebef47931d16527c0
+      size: 3941772
     - path: reports/figures/confusion_matrix_delay.png
       hash: md5
-      md5: 44507e68e55f891207018cd926b789f7
-      size: 30458
+      md5: b4ad31c627391dc0ac04d1fc6c5d0b3a
+      size: 30614
     - path: reports/figures/feature_importance_delay.png
       hash: md5
-      md5: d9d69759ee1f400a340c5ccdb01ade9f
-      size: 70405
+      md5: e25a569f574fe65134ebd1bfbe205a83
+      size: 69306
     - path: reports/metrics/delay_metrics.json
       hash: md5
-      md5: ec1b8d3811df3366298ff784b9311f72
+      md5: 3097c2d28ce9d13817efc88de2e36f3c
       size: 251
   train_reason:
     cmd: python -m src.train_reason
@@ -148,33 +148,33 @@ stages:
           test_size: 0.2
           random_state: 42
         train_reason:
-          n_estimators: 800
-          learning_rate: 0.03
-          num_leaves: 127
-          max_depth: -1
-          min_child_samples: 20
-          reg_alpha: 0.0
-          reg_lambda: 0.0
+          n_estimators: 600
+          learning_rate: 0.04
+          num_leaves: 63
+          max_depth: 8
+          min_child_samples: 50
+          reg_alpha: 0.1
+          reg_lambda: 0.2
           class_weight: balanced
           random_state: 42
     outs:
     - path: models/reason_model/metadata.json
       hash: md5
-      md5: 4d1930925c21d377c5d1048c11d17115
-      size: 2567
+      md5: 4851b16d1d68376eb0b6870356d3aa07
+      size: 2664
     - path: models/reason_model/model.pkl
       hash: md5
-      md5: a9e49c38539ecd986293a2aac0dd2576
-      size: 76467864
+      md5: 2f162c4840b852a0565b353587acfed5
+      size: 24122328
     - path: reports/figures/confusion_matrix_reason.png
       hash: md5
-      md5: ecdcffffec46caff8adb3354fab80317
-      size: 88607
+      md5: 9f4f4189607396e143ccd95ccdbea320
+      size: 92273
     - path: reports/figures/feature_importance_reason.png
       hash: md5
-      md5: 6d3ac7a28e9c412f7d248ae780c58dd5
-      size: 70344
+      md5: 06b267a06be2baffcce218ab9f4f6a03
+      size: 71724
     - path: reports/metrics/reason_metrics.json
       hash: md5
-      md5: c77f640288b69c8c9614daab51d140f5
-      size: 1148
+      md5: c4ae87e65fcab53d0c8acb7c1be0e116
+      size: 1247
