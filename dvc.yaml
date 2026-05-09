@@ -1,4 +1,16 @@
 stages:
+  data_stats:
+    cmd: python -m src.data_stats
+    deps:
+      - src/data_stats.py
+      - src/config.py
+      - data/raw/flight_delays_ru_synthetic_2023_2025.csv
+    params:
+      - paths.raw_csv
+    metrics:
+      - reports/metrics/data_stats.json:
+          cache: false
+
   prepare:
     cmd: python -m src.prepare_data
     deps:

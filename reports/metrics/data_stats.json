@@ -1,0 +1,29 @@
+{
+  "file": {
+    "path": "data/raw/flight_delays_ru_synthetic_2023_2025.csv",
+    "size_bytes": 26272210,
+    "sha256_16": "c1fcca960cb9a24d"
+  },
+  "rows_total": 120360,
+  "duplicate_flight_id": 360,
+  "positive_class": {
+    "count": 30170,
+    "share": 0.250665
+  },
+  "delay_reason_counts": {
+    "none": 90190,
+    "weather": 10116,
+    "late_aircraft": 6234,
+    "airport_congestion": 5850,
+    "airline_operations": 3404,
+    "technical": 2098,
+    "security_or_border_control": 1237,
+    "other": 1231
+  },
+  "delay_minutes_when_significant": {
+    "mean": 40.34,
+    "median": 34.0,
+    "p95": 84.0,
+    "max": 207
+  }
+}

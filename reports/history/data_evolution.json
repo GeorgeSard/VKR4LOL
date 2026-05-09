@@ -1,0 +1,42 @@
+[
+  {
+    "commit": "92e85cd",
+    "subject": "init: ВКР проект прогнозирования задержек авиарейсов",
+    "stats": {
+      "rows": 120360,
+      "positive_count": 21928,
+      "positive_share": 0.182187,
+      "delay_reason_counts": {
+        "none": 98432,
+        "weather": 5312,
+        "airport_congestion": 4567,
+        "late_aircraft": 4079,
+        "airline_operations": 3404,
+        "technical": 2098,
+        "security_or_border_control": 1237,
+        "other": 1231
+      },
+      "mean_delay_when_significant": 45.23
+    }
+  },
+  {
+    "commit": "c117cca",
+    "subject": "iter1: data quality fix — усиление weather/airport_congestion/late_aircraft сигналов",
+    "stats": {
+      "rows": 120360,
+      "positive_count": 30170,
+      "positive_share": 0.250665,
+      "delay_reason_counts": {
+        "none": 90190,
+        "weather": 10116,
+        "late_aircraft": 6234,
+        "airport_congestion": 5850,
+        "airline_operations": 3404,
+        "technical": 2098,
+        "security_or_border_control": 1237,
+        "other": 1231
+      },
+      "mean_delay_when_significant": 40.34
+    }
+  }
+]

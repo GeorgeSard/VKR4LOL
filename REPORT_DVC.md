@@ -15,6 +15,59 @@
 
 **Главный вывод:** качество данных дало +22 п.п. F1, тюнинг гиперпараметров — ещё +1 п.п. ROC-AUC. Дальнейшие итерации уперлись в плато.
 
+## Прозрачность изменений данных через DVC
+
+**Проблема:** в репо лежит один файл данных, и без специального инструментария не видно, что он менялся.
+
+**Решение в этом проекте:**
+
+1. **DVC-стадия `data_stats`** считает по `data/raw/*.csv` сводку (rows, positive_share, sha256, mean delay) и сохраняет в `reports/metrics/data_stats.json`. Эта метрика отслеживается DVC.
+
+```bash
+# текущая статистика данных (печатает все метрики, включая data_stats)
+docker compose run --rm trainer dvc metrics show
+
+# или прямо открыть файл
+cat reports/metrics/data_stats.json
+```
+
+2. **`scripts/show_data_evolution.py`** проходит по всей git-истории, для каждого коммита извлекает CSV (`git show <sha>:data/raw/...csv`), считает статистику и выдаёт сравнительную таблицу:
+
+```bash
+docker compose run --rm trainer python scripts/show_data_evolution.py
+```
+
+Результат на текущей истории:
+
+```
+commit      rows   positive mean_delay  subject
+------------------------------------------------------------------------------------------
+92e85cd   120360     18.22%      45.23  init: ВКР проект прогнозирования задержек авиарейс
+c117cca   120360     25.07%      40.34  iter1: data quality fix — усиление weather/airport
+```
+
+Чётко видно: после iter1 положительный класс вырос с 18.22% до 25.07% — данные действительно изменились. В коммитах iter2–iter5 данные те же (менялись только гиперпараметры), и скрипт это отмечает в логе.
+
+3. **git diff по data_stats.json** показывает изменение метрики данных между коммитами:
+
+```bash
+git log --oneline reports/metrics/data_stats.json
+git diff <sha1> <sha2> -- reports/metrics/data_stats.json
+```
+
+4. **DVC видит изменение сырого файла** через хеш в `dvc.lock`. После `python scripts/enhance_data.py` команда `dvc status` покажет:
+
+```
+data_stats:
+    changed deps:
+        data/raw/flight_delays_ru_synthetic_2023_2025.csv
+prepare:
+    changed deps:
+        data/raw/flight_delays_ru_synthetic_2023_2025.csv
+```
+
+Это значит DVC знает о смене данных и понимает, что пайплайн надо пересчитать.
+
 ## Команды DVC, которые надо запустить и показать
 
 Все команды выполняются через Docker (стек должен быть поднят):

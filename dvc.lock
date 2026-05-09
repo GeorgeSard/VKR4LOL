@@ -178,3 +178,26 @@ stages:
       hash: md5
       md5: c4ae87e65fcab53d0c8acb7c1be0e116
       size: 1247
+  data_stats:
+    cmd: python -m src.data_stats
+    deps:
+    - path: data/raw/flight_delays_ru_synthetic_2023_2025.csv
+      hash: md5
+      md5: c5c286bea4cb05306566f2547e4079b4
+      size: 26272210
+    - path: src/config.py
+      hash: md5
+      md5: 0f4cea99cccf46f44ef5685a1ca187e3
+      size: 599
+    - path: src/data_stats.py
+      hash: md5
+      md5: 71bb36f2fcf97f662fc071b057c7a536
+      size: 3319
+    params:
+      params.yaml:
+        paths.raw_csv: data/raw/flight_delays_ru_synthetic_2023_2025.csv
+    outs:
+    - path: reports/metrics/data_stats.json
+      hash: md5
+      md5: 8ec45a46e86a5dd39bb9a249effaf127
+      size: 630
