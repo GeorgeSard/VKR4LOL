@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": {"type": "grafana", "uid": "-- Grafana --"},
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -22,39 +25,70 @@
   "panels": [
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 0},
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
       "id": 100,
       "panels": [],
-      "title": "FastAPI — общие показатели",
+      "title": "Общие показатели — текущее состояние API",
       "type": "row"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Сколько HTTP-запросов в секунду сейчас обрабатывает FastAPI (среднее за последнюю минуту). Считается по всем эндпоинтам. Метрика: rate(http_requests_total). Пороги: 0–10 норма, 10–50 повышенная нагрузка, >50 высокая.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "orange", "value": 10},
-              {"color": "red", "value": 50}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
             ]
           },
           "unit": "reqps"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 1},
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 8,
+        "h": 4
+      },
       "id": 1,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"]}
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "sum(rate(http_requests_total{job=\"fastapi\"}[1m]))",
           "refId": "A"
         }
@@ -63,59 +97,58 @@
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Кумулятивный счётчик: сколько HTTP-запросов FastAPI обработал суммарно с момента старта. Сбрасывается при перезапуске контейнера. Метрика: sum(http_requests_total).",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "thresholds"},
-          "thresholds": {"mode": "absolute", "steps": [{"color": "blue"}]},
-          "unit": "short"
-        }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 1},
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"]}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "sum(http_requests_total{job=\"fastapi\"})",
-          "refId": "A"
-        }
-      ],
-      "title": "Всего обработано запросов",
-      "type": "stat"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
       "description": "P95 латентность: 95% запросов завершаются быстрее этого значения. Окно усреднения 5 минут. Зелёный <100ms, жёлтый <500ms, красный >500ms. Запросы /predict обычно 5-50ms на CPU.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 0.1},
-              {"color": "red", "value": 0.5}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.1
+              },
+              {
+                "color": "red",
+                "value": 0.5
+              }
             ]
           },
           "unit": "s"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 1},
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 8,
+        "h": 4
+      },
       "id": 3,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
-        "reduceOptions": {"calcs": ["lastNotNull"]}
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
           "refId": "A"
         }
@@ -124,31 +157,57 @@
       "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Доля HTTP-ответов с кодами 4xx (ошибки клиента) и 5xx (ошибки сервера) от общего числа за 5 минут. Здоровый сервис <1%. Если растёт — смотри логи fastapi: docker compose logs -f fastapi.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 0.01},
-              {"color": "red", "value": 0.05}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.01
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
             ]
           },
           "unit": "percentunit"
         }
       },
-      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 1},
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 8,
+        "h": 4
+      },
       "id": 4,
       "options": {
         "colorMode": "background",
-        "reduceOptions": {"calcs": ["lastNotNull"]}
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "sum(rate(http_requests_total{job=\"fastapi\",status=~\"4..|5..\"}[5m])) / clamp_min(sum(rate(http_requests_total{job=\"fastapi\"}[5m])), 0.001)",
           "refId": "A"
         }
@@ -158,38 +217,68 @@
     },
     {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 5},
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 24,
+        "h": 1
+      },
       "id": 101,
       "panels": [],
-      "title": "FastAPI — детали по эндпоинтам",
+      "title": "FastAPI — трафик, латентность, ошибки",
       "type": "row"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Запросов в секунду в разрезе эндпоинтов API: /predict (главная функция), /health (проверка), /metrics (этот же дашборд для Prometheus), /experiments, /system/containers, /train. Стек показывает суммарную нагрузку. Полезно увидеть, какой эндпоинт самый нагруженный.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 25,
             "lineWidth": 2,
             "showPoints": "never",
             "spanNulls": true,
-            "stacking": {"mode": "normal"}
+            "stacking": {
+              "mode": "normal"
+            }
           },
           "unit": "reqps"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
       "id": 5,
       "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi", "sort": "desc"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "sum by (handler) (rate(http_requests_total{job=\"fastapi\"}[1m]))",
           "legendFormat": "{{handler}}",
           "refId": "A"
@@ -199,11 +288,16 @@
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Латентность p50 (медиана) и p95 (95-й перцентиль) по эндпоинтам за окно 5 мин. p50 — типичный пользователь, p95 — длинный хвост. Большой разрыв p95-p50 = неравномерная производительность. /predict должен укладываться в десятки миллисекунд.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 10,
@@ -212,21 +306,41 @@
           "unit": "s"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 8
+      },
       "id": 6,
       "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "histogram_quantile(0.50, sum by (le, handler) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
           "legendFormat": "p50 {{handler}}",
           "refId": "A"
         },
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
           "legendFormat": "p95 {{handler}}",
           "refId": "B"
@@ -236,29 +350,52 @@
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "HTTP статус-коды по группам: 2xx (успех), 3xx (редирект), 4xx (ошибка клиента, например 404 или 422), 5xx (ошибка сервера). Bar-chart с накоплением. В норме видишь только 2xx. Появление 5xx = смотри логи приложения.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "bars",
             "fillOpacity": 80,
             "lineWidth": 1,
-            "stacking": {"mode": "normal"}
+            "stacking": {
+              "mode": "normal"
+            }
           },
           "unit": "reqps"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 24,
+        "h": 7
+      },
       "id": 7,
       "options": {
-        "legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "sum by (status) (rate(http_requests_total{job=\"fastapi\"}[1m]))",
           "legendFormat": "{{status}}",
           "refId": "A"
@@ -268,56 +405,29 @@
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Размер успешно обработанных HTTP-запросов и ответов. Тело /predict ~1KB, ответ /predict ~150 байт. Резкий рост inputs может означать атаку или баг.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 2
-          },
-          "unit": "bytes"
-        }
-      },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
-      "id": 8,
-      "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_size_bytes_bucket{job=\"fastapi\"}[5m])))",
-          "legendFormat": "request p95",
-          "refId": "A"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_response_size_bytes_bucket{job=\"fastapi\"}[5m])))",
-          "legendFormat": "response p95",
-          "refId": "B"
-        }
-      ],
-      "title": "Размер запросов и ответов (p95)",
-      "type": "timeseries"
-    },
-    {
       "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 22},
-      "id": 102,
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 1
+      },
+      "id": 103,
       "panels": [],
-      "title": "FastAPI — процесс Python",
+      "title": "Ресурсы стека — память модели и CPU",
       "type": "row"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "description": "Резидентная память процесса uvicorn+FastAPI (RSS — Resident Set Size). Включает загруженные ML-модели (~22MB на диске, в памяти больше из-за numpy arrays). Должна быть стабильной — рост означает утечку.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "thresholds"},
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 25,
@@ -326,29 +436,57 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              {"color": "green", "value": null},
-              {"color": "yellow", "value": 1073741824},
-              {"color": "red", "value": 2147483648}
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1073741824
+              },
+              {
+                "color": "red",
+                "value": 2147483648
+              }
             ]
           },
           "unit": "bytes"
         }
       },
-      "gridPos": {"h": 8, "w": 8, "x": 0, "y": 23},
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
       "id": 9,
       "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "list"},
-        "tooltip": {"mode": "single"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "process_resident_memory_bytes{job=\"fastapi\"}",
           "legendFormat": "RSS",
           "refId": "A"
         },
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "process_virtual_memory_bytes{job=\"fastapi\"}",
           "legendFormat": "Virtual",
           "refId": "B"
@@ -358,118 +496,16 @@
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "CPU процесса FastAPI: rate(process_cpu_seconds_total). 100% = одно ядро полностью занято. На быстром Mac M1/M2 один /predict жжёт CPU миллисекундами, поэтому при низкой нагрузке здесь будут единицы процентов.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineWidth": 2
-          },
-          "unit": "percentunit"
-        }
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
       },
-      "gridPos": {"h": 8, "w": 8, "x": 8, "y": 23},
-      "id": 10,
-      "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "list"},
-        "tooltip": {"mode": "single"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "rate(process_cpu_seconds_total{job=\"fastapi\"}[1m])",
-          "legendFormat": "CPU",
-          "refId": "A"
-        }
-      ],
-      "title": "FastAPI: CPU процесса",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Открытые файловые дескрипторы процесса. Каждое HTTP-соединение, файл pkl-модели, лог-файл — это дескриптор. Резкий рост без отката = leak (соединения не закрываются).",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 15,
-            "lineWidth": 2
-          },
-          "unit": "short"
-        }
-      },
-      "gridPos": {"h": 8, "w": 8, "x": 16, "y": 23},
-      "id": 11,
-      "options": {
-        "legend": {"calcs": ["last"], "displayMode": "list"},
-        "tooltip": {"mode": "single"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "process_open_fds{job=\"fastapi\"}",
-          "legendFormat": "open FDs",
-          "refId": "A"
-        }
-      ],
-      "title": "FastAPI: открытые дескрипторы",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {"h": 1, "w": 24, "x": 0, "y": 31},
-      "id": 103,
-      "panels": [],
-      "title": "Контейнеры (cAdvisor — агрегаты по cgroup)",
-      "type": "row"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "На macOS Docker Desktop cAdvisor видит только агрегаты по cgroup-путям (id=\"/docker\" — все контейнеры разом, id=\"/\" — вся VM Docker Desktop). Индивидуальные имена контейнеров недоступны — это особенность macOS, на Linux работает иначе. Здесь — общая RAM всех Docker-контейнеров.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineWidth": 2
-          },
-          "unit": "bytes"
-        }
-      },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32},
-      "id": 12,
-      "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "container_memory_usage_bytes{id=\"/docker\"}",
-          "legendFormat": "все docker контейнеры",
-          "refId": "A"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "container_memory_rss{id=\"/docker\"}",
-          "legendFormat": "RSS docker",
-          "refId": "B"
-        }
-      ],
-      "title": "Память Docker (всего по cgroup /docker)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
       "description": "Суммарная утилизация CPU всеми Docker-контейнерами — rate(container_cpu_usage_seconds_total{id=\"/docker\"}) умножить на 100. Покажет нагрузку при /train (тренер жрёт CPU), при пиковой работе FastAPI и т.д.",
       "fieldConfig": {
         "defaults": {
-          "color": {"mode": "palette-classic"},
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "drawStyle": "line",
             "fillOpacity": 20,
@@ -478,21 +514,41 @@
           "unit": "percent"
         }
       },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32},
+      "gridPos": {
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 8
+      },
       "id": 13,
       "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
       },
       "targets": [
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "rate(container_cpu_usage_seconds_total{id=\"/docker\",cpu=\"total\"}[1m]) * 100",
           "legendFormat": "Docker total CPU",
           "refId": "A"
         },
         {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
           "expr": "rate(container_cpu_usage_seconds_total{id=\"/\",cpu=\"total\"}[1m]) * 100",
           "legendFormat": "Host total CPU",
           "refId": "B"
@@ -500,88 +556,23 @@
       ],
       "title": "CPU Docker и хоста",
       "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Сетевой трафик на интерфейсе eth0 контейнерной сети Docker. RX — приём (входящие HTTP-запросы), TX — отдача (ответы). Полезно увидеть, что graphana пуллит из prometheus, а fastapi отдаёт ответы.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 2
-          },
-          "unit": "Bps"
-        }
-      },
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 40},
-      "id": 14,
-      "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "rate(container_network_receive_bytes_total{id=\"/\",interface=\"eth0\"}[1m])",
-          "legendFormat": "RX eth0",
-          "refId": "A"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "rate(container_network_transmit_bytes_total{id=\"/\",interface=\"eth0\"}[1m])",
-          "legendFormat": "TX eth0",
-          "refId": "B"
-        }
-      ],
-      "title": "Сетевой трафик (Docker eth0)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "description": "Дисковый I/O всех Docker-контейнеров: чтения и записи на диск. Полезно увидеть, как trainer пишет models/, reports/, как fastapi читает модель.",
-      "fieldConfig": {
-        "defaults": {
-          "color": {"mode": "palette-classic"},
-          "custom": {
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "lineWidth": 2
-          },
-          "unit": "Bps"
-        }
-      },
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 40},
-      "id": 15,
-      "options": {
-        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
-        "tooltip": {"mode": "multi"}
-      },
-      "targets": [
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "rate(container_fs_reads_bytes_total{id=\"/docker\"}[1m])",
-          "legendFormat": "reads",
-          "refId": "A"
-        },
-        {
-          "datasource": {"type": "prometheus", "uid": "prometheus"},
-          "expr": "rate(container_fs_writes_bytes_total{id=\"/docker\"}[1m])",
-          "legendFormat": "writes",
-          "refId": "B"
-        }
-      ],
-      "title": "Дисковый I/O Docker",
-      "type": "timeseries"
     }
   ],
   "refresh": "10s",
   "schemaVersion": 39,
   "style": "dark",
-  "tags": ["vkr", "flight-delay", "fastapi"],
-  "templating": {"list": []},
-  "time": {"from": "now-15m", "to": "now"},
+  "tags": [
+    "vkr",
+    "flight-delay",
+    "fastapi"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "",
   "title": "VKR — Flight Delay API мониторинг",
