@@ -1,7 +1,7 @@
 {
   "task": "binary_classification_significant_delay",
   "target": "is_significant_delay",
-  "threshold": 0.5599999999999997,
+  "threshold": 0.5299999999999998,
   "features": [
     "distance_km",
     "planned_duration_min",
@@ -30,16 +30,16 @@
     "day_of_week"
   ],
   "metrics": {
-    "threshold": 0.5599999999999997,
-    "precision": 0.6772927905836195,
-    "recall": 0.4591090425531915,
-    "f1": 0.5472557955220924,
-    "roc_auc": 0.7260051746647138,
-    "pr_auc": 0.5597952151764908,
+    "threshold": 0.5299999999999998,
+    "precision": 0.6385755363857554,
+    "recall": 0.4798869680851064,
+    "f1": 0.5479738065863149,
+    "roc_auc": 0.7327279334733712,
+    "pr_auc": 0.5637957409997938,
     "support_positive": 6016,
     "support_total": 24000
   },
-  "trained_at_utc": "2026-05-09T14:35:19",
+  "trained_at_utc": "2026-05-09T14:34:01",
   "library_versions": {
     "python": "3.11.15",
     "sklearn": "1.5.2",
@@ -48,13 +48,13 @@
     "numpy": "1.26.4"
   },
   "params": {
-    "n_estimators": 1000,
-    "learning_rate": 0.03,
-    "num_leaves": 95,
-    "max_depth": 10,
-    "min_child_samples": 60,
-    "reg_alpha": 0.2,
-    "reg_lambda": 0.3,
+    "n_estimators": 600,
+    "learning_rate": 0.04,
+    "num_leaves": 63,
+    "max_depth": 8,
+    "min_child_samples": 80,
+    "reg_alpha": 0.1,
+    "reg_lambda": 0.2,
     "class_weight": "balanced",
     "random_state": 42,
     "threshold_min": 0.1,
