@@ -1,0 +1,105 @@
+name: vkr-flight-delay
+
+services:
+  mlflow:
+    build: .
+    image: vkr-flight-delay:latest
+    container_name: vkr-mlflow
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:////mlruns/mlflow.db
+      --default-artifact-root /mlruns/artifacts
+    ports:
+      - "5001:5000"
+    volumes:
+      - mlflow_data:/mlruns
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:5000/\")' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  trainer:
+    build: .
+    image: vkr-flight-delay:latest
+    container_name: vkr-trainer
+    command: >
+      sh -c "if [ ! -d .dvc ]; then dvc init --no-scm -q; fi && dvc repro && echo '--- DVC METRICS ---' && dvc metrics show"
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      PROJECT_ROOT: /app
+    volumes:
+      - ./:/app
+      - mlflow_data:/mlruns
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    restart: "no"
+
+  fastapi:
+    build: .
+    image: vkr-flight-delay:latest
+    container_name: vkr-fastapi
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      PROJECT_ROOT: /app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      trainer:
+        condition: service_completed_successfully
+      mlflow:
+        condition: service_healthy
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.55.0
+    container_name: vkr-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - fastapi
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: vkr-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/vkr.json:ro
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: vkr-cadvisor
+    privileged: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  mlflow_data:
+  prometheus_data:
+  grafana_data:

@@ -1,0 +1,108 @@
+{
+  "task": "multiclass_classification_delay_reason",
+  "target": "delay_reason",
+  "classes": [
+    "airline_operations",
+    "airport_congestion",
+    "late_aircraft",
+    "other",
+    "security_or_border_control",
+    "technical",
+    "weather"
+  ],
+  "features": [
+    "distance_km",
+    "planned_duration_min",
+    "temperature_origin_c",
+    "wind_speed_origin_mps",
+    "precipitation_origin_mm",
+    "visibility_origin_km",
+    "airport_load_index",
+    "airline_load_factor",
+    "previous_flight_delay_min",
+    "route_avg_delay_min",
+    "aircraft_age_years",
+    "departure_hour",
+    "month",
+    "is_weekend",
+    "technical_check_required",
+    "crew_change_required",
+    "airline_code",
+    "origin_airport",
+    "destination_airport",
+    "route",
+    "aircraft_type",
+    "weather_origin",
+    "weather_destination",
+    "season",
+    "day_of_week"
+  ],
+  "metrics": {
+    "macro_f1": 0.21515620688374798,
+    "weighted_f1": 0.27772006341801087,
+    "support_total": 4373,
+    "per_class": {
+      "airline_operations": {
+        "precision": 0.18600682593856654,
+        "recall": 0.16029411764705884,
+        "f1": 0.1721958925750395,
+        "support": 680
+      },
+      "airport_congestion": {
+        "precision": 0.29829545454545453,
+        "recall": 0.34615384615384615,
+        "f1": 0.32044760935910477,
+        "support": 910
+      },
+      "late_aircraft": {
+        "precision": 0.29782608695652174,
+        "recall": 0.3366093366093366,
+        "f1": 0.3160322952710496,
+        "support": 814
+      },
+      "other": {
+        "precision": 0.01818181818181818,
+        "recall": 0.0040650406504065045,
+        "f1": 0.006644518272425249,
+        "support": 246
+      },
+      "security_or_border_control": {
+        "precision": 0.07142857142857142,
+        "recall": 0.024390243902439025,
+        "f1": 0.03636363636363636,
+        "support": 246
+      },
+      "technical": {
+        "precision": 0.27607361963190186,
+        "recall": 0.215311004784689,
+        "f1": 0.24193548387096775,
+        "support": 418
+      },
+      "weather": {
+        "precision": 0.3684992570579495,
+        "recall": 0.4683663833805477,
+        "f1": 0.4124740124740125,
+        "support": 1059
+      }
+    }
+  },
+  "trained_at_utc": "2026-05-09T14:12:41",
+  "library_versions": {
+    "python": "3.11.15",
+    "sklearn": "1.5.2",
+    "lightgbm": "4.5.0",
+    "pandas": "2.2.3",
+    "numpy": "1.26.4"
+  },
+  "params": {
+    "n_estimators": 400,
+    "learning_rate": 0.05,
+    "num_leaves": 63,
+    "max_depth": -1,
+    "min_child_samples": 30,
+    "reg_alpha": 0.0,
+    "reg_lambda": 0.0,
+    "class_weight": "balanced",
+    "random_state": 42
+  }
+}

@@ -1,0 +1,180 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m src.prepare_data
+    deps:
+    - path: data/raw/flight_delays_ru_synthetic_2023_2025.csv
+      hash: md5
+      md5: 19bc43e4743cdd200a9c2dc03a41297c
+      size: 26092858
+    - path: src/config.py
+      hash: md5
+      md5: 0f4cea99cccf46f44ef5685a1ca187e3
+      size: 599
+    - path: src/prepare_data.py
+      hash: md5
+      md5: 447662ed000d77d0ded784ca3af81b1d
+      size: 1890
+    params:
+      params.yaml:
+        paths.cleaned_csv: data/interim/cleaned_flights.csv
+        paths.raw_csv: data/raw/flight_delays_ru_synthetic_2023_2025.csv
+        prepare.drop_duplicates_on: flight_id
+    outs:
+    - path: data/interim/cleaned_flights.csv
+      hash: md5
+      md5: 09a036af760d7357c6024080d0e823b3
+      size: 26854432
+  featurize:
+    cmd: python -m src.make_features
+    deps:
+    - path: data/interim/cleaned_flights.csv
+      hash: md5
+      md5: 09a036af760d7357c6024080d0e823b3
+      size: 26854432
+    - path: src/config.py
+      hash: md5
+      md5: 0f4cea99cccf46f44ef5685a1ca187e3
+      size: 599
+    - path: src/make_features.py
+      hash: md5
+      md5: 085a8cb2f92648f59d0cc89a45ed6a2f
+      size: 1668
+    - path: src/preprocessing.py
+      hash: md5
+      md5: 1fe6ed08c5146c41663381654b98ad07
+      size: 2299
+    params:
+      params.yaml:
+        paths.cleaned_csv: data/interim/cleaned_flights.csv
+        paths.features_csv: data/processed/features.csv
+    outs:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
+      size: 14603234
+  train_delay:
+    cmd: python -m src.train_delay
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
+      size: 14603234
+    - path: src/config.py
+      hash: md5
+      md5: 0f4cea99cccf46f44ef5685a1ca187e3
+      size: 599
+    - path: src/evaluate.py
+      hash: md5
+      md5: 138a81b63f5cacbcb4a13b68b9f66801
+      size: 4037
+    - path: src/preprocessing.py
+      hash: md5
+      md5: 1fe6ed08c5146c41663381654b98ad07
+      size: 2299
+    - path: src/train_delay.py
+      hash: md5
+      md5: 1b6bfe8d2cb65b66d88634fd27a02956
+      size: 6094
+    params:
+      params.yaml:
+        paths.delay_model_dir: models/delay_model
+        paths.features_csv: data/processed/features.csv
+        split:
+          test_size: 0.2
+          random_state: 42
+        train_delay:
+          n_estimators: 400
+          learning_rate: 0.05
+          num_leaves: 63
+          max_depth: -1
+          min_child_samples: 50
+          reg_alpha: 0.0
+          reg_lambda: 0.0
+          class_weight: balanced
+          random_state: 42
+          threshold_min: 0.1
+          threshold_max: 0.9
+          threshold_step: 0.01
+    outs:
+    - path: models/delay_model/metadata.json
+      hash: md5
+      md5: 436702da9a192ded9a400a8f3c2e6799
+      size: 1547
+    - path: models/delay_model/model.pkl
+      hash: md5
+      md5: 02774a1b00c781d829e4c6ce6a895e67
+      size: 2748620
+    - path: reports/figures/confusion_matrix_delay.png
+      hash: md5
+      md5: 993c084ba48386d16f389cd168f6325a
+      size: 30211
+    - path: reports/figures/feature_importance_delay.png
+      hash: md5
+      md5: d012f5632741c0d8d60d5b0cd69255ce
+      size: 70426
+    - path: reports/metrics/delay_metrics.json
+      hash: md5
+      md5: 898d563fcbe8a2a44f1d2c1a7cce8ea5
+      size: 253
+  train_reason:
+    cmd: python -m src.train_reason
+    deps:
+    - path: data/processed/features.csv
+      hash: md5
+      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
+      size: 14603234
+    - path: src/config.py
+      hash: md5
+      md5: 0f4cea99cccf46f44ef5685a1ca187e3
+      size: 599
+    - path: src/evaluate.py
+      hash: md5
+      md5: 138a81b63f5cacbcb4a13b68b9f66801
+      size: 4037
+    - path: src/preprocessing.py
+      hash: md5
+      md5: 1fe6ed08c5146c41663381654b98ad07
+      size: 2299
+    - path: src/train_reason.py
+      hash: md5
+      md5: f1fd9ba9ae2c296165cc84080d1941aa
+      size: 6895
+    params:
+      params.yaml:
+        paths.features_csv: data/processed/features.csv
+        paths.reason_model_dir: models/reason_model
+        split:
+          test_size: 0.2
+          random_state: 42
+        train_reason:
+          n_estimators: 400
+          learning_rate: 0.05
+          num_leaves: 63
+          max_depth: -1
+          min_child_samples: 30
+          reg_alpha: 0.0
+          reg_lambda: 0.0
+          class_weight: balanced
+          random_state: 42
+    outs:
+    - path: models/reason_model/metadata.json
+      hash: md5
+      md5: 1654eeb3f2babe58240e0b8b3bf748fe
+      size: 2668
+    - path: models/reason_model/model.pkl
+      hash: md5
+      md5: ec189fa5e9626b1fed40e23c744ea72d
+      size: 18943896
+    - path: reports/figures/confusion_matrix_reason.png
+      hash: md5
+      md5: 01b7703ec9b13d42e5b89fbf8a5bae12
+      size: 89686
+    - path: reports/figures/feature_importance_reason.png
+      hash: md5
+      md5: b372e4a2ffacaec561e007ba1246263d
+      size: 71216
+    - path: reports/metrics/reason_metrics.json
+      hash: md5
+      md5: d1c324b51add512a7c5e423df72591c7
+      size: 1250

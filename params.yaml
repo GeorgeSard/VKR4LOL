@@ -1,0 +1,43 @@
+paths:
+  raw_csv: data/raw/flight_delays_ru_synthetic_2023_2025.csv
+  cleaned_csv: data/interim/cleaned_flights.csv
+  features_csv: data/processed/features.csv
+  delay_model_dir: models/delay_model
+  reason_model_dir: models/reason_model
+  metrics_dir: reports/metrics
+  figures_dir: reports/figures
+
+mlflow:
+  experiment_name: flight-delay-vkr
+
+prepare:
+  drop_duplicates_on: flight_id
+
+split:
+  test_size: 0.2
+  random_state: 42
+
+train_delay:
+  n_estimators: 400
+  learning_rate: 0.05
+  num_leaves: 63
+  max_depth: -1
+  min_child_samples: 50
+  reg_alpha: 0.0
+  reg_lambda: 0.0
+  class_weight: balanced
+  random_state: 42
+  threshold_min: 0.10
+  threshold_max: 0.90
+  threshold_step: 0.01
+
+train_reason:
+  n_estimators: 400
+  learning_rate: 0.05
+  num_leaves: 63
+  max_depth: -1
+  min_child_samples: 30
+  reg_alpha: 0.0
+  reg_lambda: 0.0
+  class_weight: balanced
+  random_state: 42

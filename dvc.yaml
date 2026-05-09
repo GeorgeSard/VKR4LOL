@@ -1,0 +1,76 @@
+stages:
+  prepare:
+    cmd: python -m src.prepare_data
+    deps:
+      - src/prepare_data.py
+      - src/config.py
+      - data/raw/flight_delays_ru_synthetic_2023_2025.csv
+    params:
+      - paths.raw_csv
+      - paths.cleaned_csv
+      - prepare.drop_duplicates_on
+    outs:
+      - data/interim/cleaned_flights.csv
+
+  featurize:
+    cmd: python -m src.make_features
+    deps:
+      - src/make_features.py
+      - src/preprocessing.py
+      - src/config.py
+      - data/interim/cleaned_flights.csv
+    params:
+      - paths.cleaned_csv
+      - paths.features_csv
+    outs:
+      - data/processed/features.csv
+
+  train_delay:
+    cmd: python -m src.train_delay
+    deps:
+      - src/train_delay.py
+      - src/preprocessing.py
+      - src/evaluate.py
+      - src/config.py
+      - data/processed/features.csv
+    params:
+      - paths.features_csv
+      - paths.delay_model_dir
+      - split
+      - train_delay
+    outs:
+      - models/delay_model/model.pkl
+      - models/delay_model/metadata.json
+    metrics:
+      - reports/metrics/delay_metrics.json:
+          cache: false
+    plots:
+      - reports/figures/confusion_matrix_delay.png:
+          cache: false
+      - reports/figures/feature_importance_delay.png:
+          cache: false
+
+  train_reason:
+    cmd: python -m src.train_reason
+    deps:
+      - src/train_reason.py
+      - src/preprocessing.py
+      - src/evaluate.py
+      - src/config.py
+      - data/processed/features.csv
+    params:
+      - paths.features_csv
+      - paths.reason_model_dir
+      - split
+      - train_reason
+    outs:
+      - models/reason_model/model.pkl
+      - models/reason_model/metadata.json
+    metrics:
+      - reports/metrics/reason_metrics.json:
+          cache: false
+    plots:
+      - reports/figures/confusion_matrix_reason.png:
+          cache: false
+      - reports/figures/feature_importance_reason.png:
+          cache: false

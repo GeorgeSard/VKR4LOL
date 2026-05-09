@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MLflow (локальные runs, в Docker используется отдельный volume)
+mlruns/
+mlartifacts/
+
+# DVC cache (большой, не нужен в git)
+.dvc/cache/
+.dvc/tmp/
+.dvc/plots/
+
+# Docker
+*.pid
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Credentials
+.env
+.env.local
+*.key
+*.pem

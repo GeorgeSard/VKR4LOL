@@ -1,0 +1,25 @@
+# Docker build context — исключаем лишнее
+.git/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+.idea/
+.vscode/
+
+# Локальные артефакты MLflow (не нужны в образе)
+mlruns/
+mlartifacts/
+
+# DVC cache
+.dvc/cache/
+.dvc/tmp/
+
+# Документация (не нужна в рантайме)
+*.md
+!README.md

@@ -1,0 +1,7 @@
+# DVC ignore — не трекаем эти пути
+__pycache__/
+*.pyc
+.DS_Store
+.git/
+.venv/
+mlruns/
