@@ -5,8 +5,8 @@ stages:
     deps:
     - path: data/raw/flight_delays_ru_synthetic_2023_2025.csv
       hash: md5
-      md5: 19bc43e4743cdd200a9c2dc03a41297c
-      size: 26092858
+      md5: c5c286bea4cb05306566f2547e4079b4
+      size: 26272210
     - path: src/config.py
       hash: md5
       md5: 0f4cea99cccf46f44ef5685a1ca187e3
@@ -23,15 +23,15 @@ stages:
     outs:
     - path: data/interim/cleaned_flights.csv
       hash: md5
-      md5: 09a036af760d7357c6024080d0e823b3
-      size: 26854432
+      md5: 146ccd096005c89fb3120c0712d1aca8
+      size: 26913711
   featurize:
     cmd: python -m src.make_features
     deps:
     - path: data/interim/cleaned_flights.csv
       hash: md5
-      md5: 09a036af760d7357c6024080d0e823b3
-      size: 26854432
+      md5: 146ccd096005c89fb3120c0712d1aca8
+      size: 26913711
     - path: src/config.py
       hash: md5
       md5: 0f4cea99cccf46f44ef5685a1ca187e3
@@ -51,15 +51,15 @@ stages:
     outs:
     - path: data/processed/features.csv
       hash: md5
-      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
-      size: 14603234
+      md5: e5e7f49fdc5d0d17ca67585fe7562681
+      size: 14662513
   train_delay:
     cmd: python -m src.train_delay
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
-      size: 14603234
+      md5: e5e7f49fdc5d0d17ca67585fe7562681
+      size: 14662513
     - path: src/config.py
       hash: md5
       md5: 0f4cea99cccf46f44ef5685a1ca187e3
@@ -99,31 +99,31 @@ stages:
     outs:
     - path: models/delay_model/metadata.json
       hash: md5
-      md5: 436702da9a192ded9a400a8f3c2e6799
-      size: 1547
+      md5: 5a88f686163714df8a1bd1fc5920e6e3
+      size: 1544
     - path: models/delay_model/model.pkl
       hash: md5
-      md5: 02774a1b00c781d829e4c6ce6a895e67
-      size: 2748620
+      md5: b31623f57458239b4382389290be86db
+      size: 2747900
     - path: reports/figures/confusion_matrix_delay.png
       hash: md5
-      md5: 993c084ba48386d16f389cd168f6325a
-      size: 30211
+      md5: 44507e68e55f891207018cd926b789f7
+      size: 30458
     - path: reports/figures/feature_importance_delay.png
       hash: md5
-      md5: d012f5632741c0d8d60d5b0cd69255ce
-      size: 70426
+      md5: d9d69759ee1f400a340c5ccdb01ade9f
+      size: 70405
     - path: reports/metrics/delay_metrics.json
       hash: md5
-      md5: 898d563fcbe8a2a44f1d2c1a7cce8ea5
-      size: 253
+      md5: ec1b8d3811df3366298ff784b9311f72
+      size: 251
   train_reason:
     cmd: python -m src.train_reason
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: 9bbd7dbc33a6d1050e76aa4d3ce91e2d
-      size: 14603234
+      md5: e5e7f49fdc5d0d17ca67585fe7562681
+      size: 14662513
     - path: src/config.py
       hash: md5
       md5: 0f4cea99cccf46f44ef5685a1ca187e3
@@ -160,21 +160,21 @@ stages:
     outs:
     - path: models/reason_model/metadata.json
       hash: md5
-      md5: 1654eeb3f2babe58240e0b8b3bf748fe
-      size: 2668
+      md5: 777dfe4c12f8f33eddf34a52395269bc
+      size: 2664
     - path: models/reason_model/model.pkl
       hash: md5
-      md5: ec189fa5e9626b1fed40e23c744ea72d
-      size: 18943896
+      md5: 1e5fbed8762819884e9c93178bc9cdb6
+      size: 18929080
     - path: reports/figures/confusion_matrix_reason.png
       hash: md5
-      md5: 01b7703ec9b13d42e5b89fbf8a5bae12
-      size: 89686
+      md5: 4bf31311bcf45ad1739c6360cdc00b5b
+      size: 90870
     - path: reports/figures/feature_importance_reason.png
       hash: md5
-      md5: b372e4a2ffacaec561e007ba1246263d
-      size: 71216
+      md5: 55f4142e573020d84969bf15e349b616
+      size: 71217
     - path: reports/metrics/reason_metrics.json
       hash: md5
-      md5: d1c324b51add512a7c5e423df72591c7
-      size: 1250
+      md5: c071beccf6710e54c63f2d093756e2ec
+      size: 1246

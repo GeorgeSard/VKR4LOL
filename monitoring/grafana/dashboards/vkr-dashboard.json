@@ -1,0 +1,375 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "grafana", "uid": "-- Grafana --"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Мониторинг FastAPI прогноза задержек авиарейсов и Docker-контейнеров",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Суммарный rate запросов к FastAPI",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "orange", "value": 10},
+              {"color": "red", "value": 50}
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 10,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "textMode": "auto"
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(rate(http_requests_total{job=\"fastapi\"}[1m]))",
+          "refId": "A"
+        }
+      ],
+      "title": "FastAPI: суммарный RPS",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Всего запросов с момента старта",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {"mode": "absolute", "steps": [{"color": "blue"}]},
+          "unit": "short"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"]}
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(http_requests_total{job=\"fastapi\"})",
+          "refId": "A"
+        }
+      ],
+      "title": "Всего запросов",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "P95 латентность всех запросов",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 0.1},
+              {"color": "red", "value": 0.5}
+            ]
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "id": 12,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "reduceOptions": {"calcs": ["lastNotNull"]}
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
+          "refId": "A"
+        }
+      ],
+      "title": "FastAPI p95 latency",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Доля 4xx/5xx за последние 5 минут",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "thresholds"},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 0.01},
+              {"color": "red", "value": 0.05}
+            ]
+          },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "id": 13,
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {"calcs": ["lastNotNull"]}
+      },
+      "pluginVersion": "11.2.2",
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum(rate(http_requests_total{job=\"fastapi\",status=~\"4..|5..\"}[5m])) / clamp_min(sum(rate(http_requests_total{job=\"fastapi\"}[5m])), 0.001)",
+          "refId": "A"
+        }
+      ],
+      "title": "Error rate",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Запросов в секунду по эндпоинтам FastAPI",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "lineWidth": 2,
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {"mode": "normal"}
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {"h": 9, "w": 12, "x": 0, "y": 4},
+      "id": 1,
+      "options": {
+        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi", "sort": "desc"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (handler) (rate(http_requests_total{job=\"fastapi\"}[1m]))",
+          "legendFormat": "{{handler}}",
+          "refId": "A"
+        }
+      ],
+      "title": "FastAPI: RPS по эндпоинтам",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "P50 и P95 латентность по эндпоинтам",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {"h": 9, "w": 12, "x": 12, "y": 4},
+      "id": 2,
+      "options": {
+        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.50, sum by (le, handler) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
+          "legendFormat": "p50 {{handler}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "histogram_quantile(0.95, sum by (le, handler) (rate(http_request_duration_seconds_bucket{job=\"fastapi\"}[5m])))",
+          "legendFormat": "p95 {{handler}}",
+          "refId": "B"
+        }
+      ],
+      "title": "FastAPI: p50/p95 latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Распределение HTTP статус-кодов",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "lineWidth": 1,
+            "stacking": {"mode": "normal"}
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 13},
+      "id": 3,
+      "options": {
+        "legend": {"calcs": ["sum"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (status) (rate(http_requests_total{job=\"fastapi\"}[1m]))",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "FastAPI: статус-коды",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "CPU контейнеров (% от ядра)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 13},
+      "id": 4,
+      "options": {
+        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (name) (rate(container_cpu_usage_seconds_total{name=~\"vkr-.*\"}[1m])) * 100",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "cAdvisor: CPU по контейнерам",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Использование RAM контейнерами",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 21},
+      "id": 5,
+      "options": {
+        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "container_memory_usage_bytes{name=~\"vkr-.*\"}",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "cAdvisor: память по контейнерам",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "description": "Сетевой трафик контейнеров",
+      "fieldConfig": {
+        "defaults": {
+          "color": {"mode": "palette-classic"},
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          },
+          "unit": "Bps"
+        }
+      },
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 21},
+      "id": 6,
+      "options": {
+        "legend": {"calcs": ["mean", "max"], "displayMode": "table", "placement": "right"},
+        "tooltip": {"mode": "multi"}
+      },
+      "targets": [
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name=~\"vkr-.*\"}[1m]))",
+          "legendFormat": "RX {{name}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "expr": "sum by (name) (rate(container_network_transmit_bytes_total{name=~\"vkr-.*\"}[1m]))",
+          "legendFormat": "TX {{name}}",
+          "refId": "B"
+        }
+      ],
+      "title": "cAdvisor: сетевой трафик",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["vkr", "flight-delay", "fastapi"],
+  "templating": {"list": []},
+  "time": {"from": "now-15m", "to": "now"},
+  "timepicker": {},
+  "timezone": "",
+  "title": "VKR — Flight Delay API мониторинг",
+  "uid": "vkr-flight-delay",
+  "version": 1,
+  "weekStart": ""
+}
