@@ -13,6 +13,7 @@ from src.preprocessing import (
     RAW_TARGET_NUMERIC,
     TARGET_DELAY,
     TARGET_REASON,
+    add_derived_features,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
@@ -27,6 +28,9 @@ def main() -> None:
     log.info("Читаю очищенный CSV: %s", cleaned_path)
     df = pd.read_csv(cleaned_path)
     log.info("Загружено строк: %d, колонок: %d", len(df), df.shape[1])
+
+    df = add_derived_features(df)
+    log.info("Добавлено производных признаков (флаги погоды/нагрузки/каскада)")
 
     keep_cols = FEATURE_COLS + [TARGET_DELAY, TARGET_REASON, RAW_TARGET_NUMERIC]
     missing = [c for c in keep_cols if c not in df.columns]

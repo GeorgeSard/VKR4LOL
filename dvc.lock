@@ -5,12 +5,12 @@ stages:
     deps:
     - path: data/raw/flight_delays_ru_synthetic_2023_2025.csv
       hash: md5
-      md5: c5c286bea4cb05306566f2547e4079b4
-      size: 26272210
+      md5: 59c3185ffc3beab16dd0307dd825dbc6
+      size: 26351790
     - path: src/config.py
       hash: md5
-      md5: 0f4cea99cccf46f44ef5685a1ca187e3
-      size: 599
+      md5: 1dec6688591876e3f7a6608a298559c7
+      size: 851
     - path: src/prepare_data.py
       hash: md5
       md5: 447662ed000d77d0ded784ca3af81b1d
@@ -23,27 +23,27 @@ stages:
     outs:
     - path: data/interim/cleaned_flights.csv
       hash: md5
-      md5: 146ccd096005c89fb3120c0712d1aca8
-      size: 26913711
+      md5: 867806a88a7a3f64d3c5d9bf0aeadcdf
+      size: 26993096
   featurize:
     cmd: python -m src.make_features
     deps:
     - path: data/interim/cleaned_flights.csv
       hash: md5
-      md5: 146ccd096005c89fb3120c0712d1aca8
-      size: 26913711
+      md5: 867806a88a7a3f64d3c5d9bf0aeadcdf
+      size: 26993096
     - path: src/config.py
       hash: md5
-      md5: 0f4cea99cccf46f44ef5685a1ca187e3
-      size: 599
+      md5: 1dec6688591876e3f7a6608a298559c7
+      size: 851
     - path: src/make_features.py
       hash: md5
-      md5: 085a8cb2f92648f59d0cc89a45ed6a2f
-      size: 1668
+      md5: e364a389f202770e0aa7ae607df1a335
+      size: 1864
     - path: src/preprocessing.py
       hash: md5
-      md5: 1fe6ed08c5146c41663381654b98ad07
-      size: 2299
+      md5: 14e614673574c4548383d5ea48000f26
+      size: 5741
     params:
       params.yaml:
         paths.cleaned_csv: data/interim/cleaned_flights.csv
@@ -51,31 +51,31 @@ stages:
     outs:
     - path: data/processed/features.csv
       hash: md5
-      md5: e5e7f49fdc5d0d17ca67585fe7562681
-      size: 14662513
+      md5: cdf7b155f010b649ae62d69b0e9ba02f
+      size: 17862120
   train_delay:
     cmd: python -m src.train_delay
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: e5e7f49fdc5d0d17ca67585fe7562681
-      size: 14662513
+      md5: cdf7b155f010b649ae62d69b0e9ba02f
+      size: 17862120
     - path: src/config.py
       hash: md5
-      md5: 0f4cea99cccf46f44ef5685a1ca187e3
-      size: 599
+      md5: 1dec6688591876e3f7a6608a298559c7
+      size: 851
     - path: src/evaluate.py
       hash: md5
       md5: 138a81b63f5cacbcb4a13b68b9f66801
       size: 4037
     - path: src/preprocessing.py
       hash: md5
-      md5: 1fe6ed08c5146c41663381654b98ad07
-      size: 2299
+      md5: 14e614673574c4548383d5ea48000f26
+      size: 5741
     - path: src/train_delay.py
       hash: md5
-      md5: 1b6bfe8d2cb65b66d88634fd27a02956
-      size: 6094
+      md5: 9fc2450a02a582c73e7537f312944642
+      size: 7307
     params:
       params.yaml:
         paths.delay_model_dir: models/delay_model
@@ -99,47 +99,47 @@ stages:
     outs:
     - path: models/delay_model/metadata.json
       hash: md5
-      md5: 36daa270195a9a39bf844702a1fa93ff
-      size: 1543
+      md5: b6f5cf03f37981892ec143f501032710
+      size: 2190
     - path: models/delay_model/model.pkl
       hash: md5
-      md5: d8b9a12e82c81a5ebef47931d16527c0
-      size: 3941772
+      md5: d9cff369e9f27bedf935798770f2cba9
+      size: 4800492
     - path: reports/figures/confusion_matrix_delay.png
       hash: md5
-      md5: b4ad31c627391dc0ac04d1fc6c5d0b3a
-      size: 30614
+      md5: df4752c50384c73ac0a3fefd7fc4ceb4
+      size: 29926
     - path: reports/figures/feature_importance_delay.png
       hash: md5
-      md5: e25a569f574fe65134ebd1bfbe205a83
-      size: 69306
+      md5: b1f451916f77289cc67107d7cedefc3e
+      size: 69442
     - path: reports/metrics/delay_metrics.json
       hash: md5
-      md5: 3097c2d28ce9d13817efc88de2e36f3c
+      md5: da4794a940d8a2604e34691a93d5b03d
       size: 251
   train_reason:
     cmd: python -m src.train_reason
     deps:
     - path: data/processed/features.csv
       hash: md5
-      md5: e5e7f49fdc5d0d17ca67585fe7562681
-      size: 14662513
+      md5: cdf7b155f010b649ae62d69b0e9ba02f
+      size: 17862120
     - path: src/config.py
       hash: md5
-      md5: 0f4cea99cccf46f44ef5685a1ca187e3
-      size: 599
+      md5: 1dec6688591876e3f7a6608a298559c7
+      size: 851
     - path: src/evaluate.py
       hash: md5
       md5: 138a81b63f5cacbcb4a13b68b9f66801
       size: 4037
     - path: src/preprocessing.py
       hash: md5
-      md5: 1fe6ed08c5146c41663381654b98ad07
-      size: 2299
+      md5: 14e614673574c4548383d5ea48000f26
+      size: 5741
     - path: src/train_reason.py
       hash: md5
-      md5: f1fd9ba9ae2c296165cc84080d1941aa
-      size: 6895
+      md5: 58b79fcff365008a0c8eb6797404e837
+      size: 8014
     params:
       params.yaml:
         paths.features_csv: data/processed/features.csv
@@ -160,44 +160,44 @@ stages:
     outs:
     - path: models/reason_model/metadata.json
       hash: md5
-      md5: 4851b16d1d68376eb0b6870356d3aa07
-      size: 2664
+      md5: ccfffa6e9074861a0a275e8ebf58f269
+      size: 3281
     - path: models/reason_model/model.pkl
       hash: md5
-      md5: 2f162c4840b852a0565b353587acfed5
-      size: 24122328
+      md5: 5ef0b38c18815623e04a5e158ef1ad22
+      size: 32061208
     - path: reports/figures/confusion_matrix_reason.png
       hash: md5
-      md5: 9f4f4189607396e143ccd95ccdbea320
-      size: 92273
+      md5: 3254887243a3d5917b3e69135f9ae8ae
+      size: 91862
     - path: reports/figures/feature_importance_reason.png
       hash: md5
-      md5: 06b267a06be2baffcce218ab9f4f6a03
-      size: 71724
+      md5: bcc7bb5739f1e99ed74f134a9359e31e
+      size: 69208
     - path: reports/metrics/reason_metrics.json
       hash: md5
-      md5: c4ae87e65fcab53d0c8acb7c1be0e116
-      size: 1247
+      md5: 37043cddf91edfb2271bdf4490bac4d1
+      size: 1243
   data_stats:
     cmd: python -m src.data_stats
     deps:
     - path: data/raw/flight_delays_ru_synthetic_2023_2025.csv
       hash: md5
-      md5: c5c286bea4cb05306566f2547e4079b4
-      size: 26272210
+      md5: 59c3185ffc3beab16dd0307dd825dbc6
+      size: 26351790
     - path: src/config.py
       hash: md5
-      md5: 0f4cea99cccf46f44ef5685a1ca187e3
-      size: 599
+      md5: 1dec6688591876e3f7a6608a298559c7
+      size: 851
     - path: src/data_stats.py
       hash: md5
-      md5: 71bb36f2fcf97f662fc071b057c7a536
-      size: 3319
+      md5: 6702f15bcd3cf6f4212c30c85700e81e
+      size: 3083
     params:
       params.yaml:
         paths.raw_csv: data/raw/flight_delays_ru_synthetic_2023_2025.csv
     outs:
     - path: reports/metrics/data_stats.json
       hash: md5
-      md5: 8ec45a46e86a5dd39bb9a249effaf127
+      md5: ae118066f6f74f35e8e4e8dd75834ab5
       size: 630

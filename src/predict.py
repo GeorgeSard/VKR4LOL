@@ -12,7 +12,7 @@ import joblib
 import pandas as pd
 
 from src.config import load_params, resolve_path
-from src.preprocessing import FEATURE_COLS
+from src.preprocessing import FEATURE_COLS, add_derived_features
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("predict")
@@ -55,8 +55,12 @@ def enrich_features(features: dict[str, Any]) -> dict[str, Any]:
 
 
 def _to_dataframe(features: dict[str, Any]) -> pd.DataFrame:
-    row = {col: features.get(col) for col in FEATURE_COLS}
-    return pd.DataFrame([row], columns=FEATURE_COLS)
+    df = pd.DataFrame([features])
+    df = add_derived_features(df)
+    for col in FEATURE_COLS:
+        if col not in df.columns:
+            df[col] = None
+    return df[FEATURE_COLS]
 
 
 def load_models() -> dict[str, Any]:

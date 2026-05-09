@@ -11,25 +11,15 @@ git history файла reports/metrics/data_stats.json + scripts/show_data_evolu
 
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
-from pathlib import Path
 
 import pandas as pd
 
-from src.config import load_params, resolve_path
+from src.config import file_sha256_short, load_params, resolve_path
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("data_stats")
-
-
-def file_sha256_short(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()[:16]
 
 
 def main() -> None:

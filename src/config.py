@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 from pathlib import Path
 from typing import Any
@@ -23,3 +24,11 @@ def resolve_path(rel: str) -> Path:
 
 def get_mlflow_tracking_uri() -> str:
     return os.environ.get("MLFLOW_TRACKING_URI", f"file:{PROJECT_ROOT / 'mlruns'}")
+
+
+def file_sha256_short(path: Path, length: int = 16) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()[:length]

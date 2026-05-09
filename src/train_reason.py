@@ -18,20 +18,31 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
-from src.config import get_mlflow_tracking_uri, load_params, resolve_path
+from src.config import file_sha256_short, get_mlflow_tracking_uri, load_params, resolve_path
 from src.evaluate import (
     multiclass_metrics,
     plot_confusion_matrix,
     plot_feature_importance,
 )
-from src.preprocessing import FEATURE_COLS, TARGET_DELAY, TARGET_REASON, build_preprocessor
+from src.preprocessing import (
+    FEATURE_COLS,
+    TARGET_DELAY,
+    TARGET_REASON,
+    build_preprocessor,
+    categorical_feature_indices,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("train_reason")
 
 
 def _try_mlflow_log(
-    params: dict, metrics: dict, model: Pipeline, classes: list[str], artifacts: list[Path]
+    params: dict,
+    metrics: dict,
+    model: Pipeline,
+    classes: list[str],
+    artifacts: list[Path],
+    training_data: dict,
 ) -> None:
     try:
         import mlflow
@@ -45,6 +56,9 @@ def _try_mlflow_log(
             mlflow.log_param("split.test_size", params["split"]["test_size"])
             mlflow.log_param("split.random_state", params["split"]["random_state"])
             mlflow.log_param("reason__num_classes", len(classes))
+            mlflow.log_params({f"data__{k}": v for k, v in training_data.items()})
+            mlflow.set_tag("data_sha256_16", training_data.get("raw_sha256_16", "unknown"))
+            mlflow.set_tag("dataset_path", training_data.get("raw_csv_path", "unknown"))
             for k, v in metrics.items():
                 if isinstance(v, (int, float)):
                     mlflow.log_metric(k, v)
@@ -108,8 +122,9 @@ def main() -> None:
     )
     pipeline = Pipeline(steps=[("preprocess", build_preprocessor()), ("model", model)])
 
-    log.info("Обучаю LightGBM (multiclass, n_estimators=%d)", cfg["n_estimators"])
-    pipeline.fit(X_train, y_train)
+    cat_indices = categorical_feature_indices()
+    log.info("Обучаю LightGBM (multiclass, n_estimators=%d, native categorical=%s)", cfg["n_estimators"], cat_indices)
+    pipeline.fit(X_train, y_train, model__categorical_feature=cat_indices)
 
     pred_test = pipeline.predict(X_test)
     y_test_named = label_encoder.inverse_transform(y_test)
@@ -124,6 +139,7 @@ def main() -> None:
     joblib.dump({"pipeline": pipeline, "classes": classes}, model_path)
     log.info("Модель сохранена: %s", model_path)
 
+    raw_csv_path = resolve_path(params["paths"]["raw_csv"])
     metadata = {
         "task": "multiclass_classification_delay_reason",
         "target": TARGET_REASON,
@@ -131,6 +147,15 @@ def main() -> None:
         "features": FEATURE_COLS,
         "metrics": metrics,
         "trained_at_utc": datetime.utcnow().isoformat(timespec="seconds"),
+        "training_data": {
+            "raw_csv_path": str(raw_csv_path.relative_to(resolve_path("."))),
+            "raw_sha256_16": file_sha256_short(raw_csv_path),
+            "raw_size_bytes": raw_csv_path.stat().st_size,
+            "features_csv_sha256_16": file_sha256_short(features_path),
+            "rows_filtered_for_reason": int(len(df_filtered)),
+            "rows_train": int(len(X_train)),
+            "rows_test": int(len(X_test)),
+        },
         "library_versions": {
             "python": platform.python_version(),
             "sklearn": sklearn.__version__,
@@ -166,7 +191,14 @@ def main() -> None:
     )
     log.info("Графики сохранены в %s", figures_dir)
 
-    _try_mlflow_log(params, metrics, pipeline, classes, [cm_path, fi_path, metrics_path, metadata_path])
+    _try_mlflow_log(
+        params,
+        metrics,
+        pipeline,
+        classes,
+        [cm_path, fi_path, metrics_path, metadata_path],
+        training_data=metadata["training_data"],
+    )
 
 
 if __name__ == "__main__":
