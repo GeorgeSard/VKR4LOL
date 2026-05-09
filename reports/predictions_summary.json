@@ -1,0 +1,168 @@
+{
+  "split": {
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "delay_model": {
+    "test_rows": 24000,
+    "threshold": 0.5199999999999998,
+    "accuracy": 0.8395,
+    "precision": 0.836,
+    "recall": 0.7013,
+    "f1": 0.7627,
+    "roc_auc": 0.8418,
+    "confusion_matrix": {
+      "true_negative": 13959,
+      "false_positive": 1214,
+      "false_negative": 2637,
+      "true_positive": 6190
+    },
+    "predicted_positives": 7404,
+    "actual_positives": 8827
+  },
+  "reason_model": {
+    "test_rows": 8828,
+    "scope": "только реальные значимые задержки (is_significant_delay=1, reason!='none')",
+    "accuracy": 0.623,
+    "macro_f1": 0.357,
+    "weighted_f1": 0.6122,
+    "per_class": {
+      "airline_operations": {
+        "precision": 0.2098,
+        "recall": 0.2228,
+        "f1": 0.2161,
+        "support": 727
+      },
+      "airport_congestion": {
+        "precision": 0.5007,
+        "recall": 0.5301,
+        "f1": 0.515,
+        "support": 1394
+      },
+      "late_aircraft": {
+        "precision": 0.6156,
+        "recall": 0.6034,
+        "f1": 0.6095,
+        "support": 1513
+      },
+      "other": {
+        "precision": 0.0278,
+        "recall": 0.0122,
+        "f1": 0.0169,
+        "support": 246
+      },
+      "security_or_border_control": {
+        "precision": 0.0577,
+        "recall": 0.0244,
+        "f1": 0.0343,
+        "support": 246
+      },
+      "technical": {
+        "precision": 0.2939,
+        "recall": 0.2774,
+        "f1": 0.2854,
+        "support": 501
+      },
+      "weather": {
+        "precision": 0.8019,
+        "recall": 0.8422,
+        "f1": 0.8215,
+        "support": 4201
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "airline_operations",
+        "airport_congestion",
+        "late_aircraft",
+        "other",
+        "security_or_border_control",
+        "technical",
+        "weather"
+      ],
+      "matrix": [
+        [
+          162,
+          159,
+          126,
+          14,
+          23,
+          60,
+          183
+        ],
+        [
+          158,
+          739,
+          139,
+          30,
+          13,
+          79,
+          236
+        ],
+        [
+          138,
+          185,
+          913,
+          19,
+          24,
+          48,
+          186
+        ],
+        [
+          36,
+          65,
+          51,
+          3,
+          4,
+          19,
+          68
+        ],
+        [
+          46,
+          56,
+          34,
+          7,
+          6,
+          23,
+          74
+        ],
+        [
+          62,
+          78,
+          69,
+          13,
+          13,
+          139,
+          127
+        ],
+        [
+          170,
+          194,
+          151,
+          22,
+          21,
+          105,
+          3538
+        ]
+      ]
+    },
+    "actual_distribution": {
+      "weather": 4201,
+      "airport_congestion": 1394,
+      "technical": 501,
+      "airline_operations": 727,
+      "late_aircraft": 1513,
+      "security_or_border_control": 246,
+      "other": 246
+    },
+    "predicted_distribution": {
+      "weather": 4412,
+      "airport_congestion": 1476,
+      "technical": 473,
+      "late_aircraft": 1483,
+      "airline_operations": 772,
+      "other": 108,
+      "security_or_border_control": 104
+    }
+  }
+}
