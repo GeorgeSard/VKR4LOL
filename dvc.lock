@@ -149,7 +149,7 @@ stages:
           random_state: 42
         train_reason:
           n_estimators: 600
-          learning_rate: 0.04
+          learning_rate: 0.06
           num_leaves: 63
           max_depth: 8
           min_child_samples: 50
@@ -160,24 +160,24 @@ stages:
     outs:
     - path: models/reason_model/metadata.json
       hash: md5
-      md5: ccfffa6e9074861a0a275e8ebf58f269
-      size: 3281
+      md5: 1a611b38c55eef08bbd675f748c9956e
+      size: 3279
     - path: models/reason_model/model.pkl
       hash: md5
-      md5: 5ef0b38c18815623e04a5e158ef1ad22
-      size: 32061208
+      md5: 2914e3032cca0ab76a596a895749028b
+      size: 32352200
     - path: reports/figures/confusion_matrix_reason.png
       hash: md5
-      md5: 3254887243a3d5917b3e69135f9ae8ae
-      size: 91862
+      md5: 32c58722150ae9d99a8e7bb51d9dda67
+      size: 91939
     - path: reports/figures/feature_importance_reason.png
       hash: md5
-      md5: bcc7bb5739f1e99ed74f134a9359e31e
-      size: 69208
+      md5: c3cdb4501fb3137828924d423c7b71ef
+      size: 69233
     - path: reports/metrics/reason_metrics.json
       hash: md5
-      md5: 37043cddf91edfb2271bdf4490bac4d1
-      size: 1243
+      md5: 8aa3fb8810d6833b39e8c7150fbe7563
+      size: 1241
   data_stats:
     cmd: python -m src.data_stats
     deps:
